@@ -8,7 +8,7 @@ export interface Country {
   independent: boolean
   status: string
   unMember: boolean
-  currencies: Currencies
+  currencies: Currencies[]
   idd: Idd
   capital: string[]
   altSpellings: string[]
@@ -50,11 +50,9 @@ export interface CoatOfArms {
   svg: string
 }
 
-export interface Currencies {
-  USD: Usd
-}
+export type Currencies = Record<string, Notation>
 
-export interface Usd {
+export interface Notation {
   name: string
   symbol: string
 }
