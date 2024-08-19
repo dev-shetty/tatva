@@ -56,7 +56,7 @@ export default async function CountryPage({
                   {Object.entries(country.name.nativeName).map(
                     ([key, value]) =>
                       key !== "eng" && (
-                        <p className="flex gap-2">
+                        <p className="flex gap-2" key={key}>
                           <span>|</span>
                           <span>{value.common}</span>
                         </p>
@@ -129,7 +129,7 @@ export default async function CountryPage({
                 <span className="text-muted-foreground">Car Registration:</span>
                 <span>
                   {country.car.signs.map((sign) => (
-                    <span>{sign}</span>
+                    <span key={sign}>{sign}</span>
                   ))}
                 </span>
               </div>

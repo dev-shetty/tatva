@@ -6,7 +6,13 @@ import useDebounce from "@/hooks/use-debounce"
 import { Country } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
-import { FormEvent, KeyboardEvent, useEffect, useState } from "react"
+import {
+  FormEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react"
 
 type SearchResponse = Pick<Country, "name">[]
 
@@ -24,14 +30,8 @@ export default function CountrySearch() {
   // Could have throttled as well, but this feels more natural
   const debouncedValue = useDebounce(search, 200)
 
-  useEffect(() => {
-    if (debouncedValue) {
-      getSearchCompletions()
-    }
-  }, [debouncedValue])
-
   // Get search completions based on the search query
-  async function getSearchCompletions() {
+  const getSearchCompletions = useCallback(async () => {
     if (search === "") {
       setSearchSuggestion(null)
       return
@@ -58,7 +58,13 @@ export default function CountrySearch() {
     )
 
     setSearchSuggestion(filteredSearchResults)
-  }
+  }, [debouncedValue, search])
+
+  useEffect(() => {
+    if (debouncedValue) {
+      getSearchCompletions()
+    }
+  }, [debouncedValue, getSearchCompletions])
 
   // When the user selects a country, navigate to the country page
   async function searchCountry(e: FormEvent<HTMLFormElement>) {
@@ -99,18 +105,12 @@ export default function CountrySearch() {
   }
 
   useEffect(() => {
-    console.table({
-      searchSuggestion,
-      selectedSearch,
-      searchCompletion,
-    })
-
     if (searchSuggestion && selectedSearch !== -1) {
       setSearchCompletion(searchSuggestion[selectedSearch].name.common)
     } else {
       setSearchCompletion(search)
     }
-  }, [selectedSearch])
+  }, [selectedSearch, search, searchSuggestion])
 
   return (
     <form onSubmit={searchCountry} className="flex gap-2">
