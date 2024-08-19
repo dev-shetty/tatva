@@ -7,6 +7,7 @@ export default async function CountryPage({
 }) {
   const { name } = params
 
+  // TODO: Fix bug where United States Minor Outlying Islands is result for "United States", have to do exact match
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_COUNTRY_API_URL}/name/${name}`
   )
@@ -84,7 +85,7 @@ export default async function CountryPage({
             </div>
             <div className="grid gap-1">
               <span className="text-muted-foreground">Borders</span>
-              <span>{country.borders.join(", ")}</span>
+              <span>{country.borders?.join(", ")}</span>
             </div>
             <div className="grid gap-1">
               <span className="text-muted-foreground">Area</span>
@@ -93,9 +94,11 @@ export default async function CountryPage({
             <div className="grid gap-1">
               <span className="text-muted-foreground">Demonyms</span>
               <span>
-                {country.demonyms.eng.f} / {country.demonyms.eng.m} (English)
-                <br />
-                {country.demonyms.fra.f} / {country.demonyms.fra.m} (French)
+                {Object.entries(country.demonyms).map(([key, value]) => (
+                  <span>
+                    {value.f} / {value.m}
+                  </span>
+                ))}
               </span>
             </div>
             <div className="grid gap-1">
@@ -164,11 +167,12 @@ export default async function CountryPage({
             <div className="grid gap-1">
               <span className="text-muted-foreground">Gini Coefficient</span>
               <span>
-                {Object.entries(country.gini).map(([key, value]) => (
-                  <p>
-                    {key}: {value.toString()}
-                  </p>
-                ))}
+                {country.gini &&
+                  Object.entries(country.gini).map(([key, value]) => (
+                    <p>
+                      {key}: {value.toString()}
+                    </p>
+                  ))}
               </span>
             </div>
             <div className="grid gap-1">
@@ -208,7 +212,7 @@ export default async function CountryPage({
           </div>
           <div className="grid gap-1">
             <span className="text-muted-foreground">Postal Code Format</span>
-            <span>{country.postalCode.format}</span>
+            <span>{country.postalCode?.format}</span>
           </div>
           <div className="grid gap-1">
             <span className="text-muted-foreground">Coat of Arms</span>

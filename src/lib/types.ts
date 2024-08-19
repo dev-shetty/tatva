@@ -57,11 +57,7 @@ export interface Notation {
   symbol: string
 }
 
-export interface Demonyms {
-  eng: Eng
-  fra: Eng
-}
-
+export type Demonyms = Record<string, Eng>
 export interface Eng {
   f: string
   m: string

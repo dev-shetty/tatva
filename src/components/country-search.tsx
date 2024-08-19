@@ -12,9 +12,11 @@ type SearchResponse = Pick<Country, "name">[]
 
 export default function CountrySearch() {
   const [search, setSearch] = useState("")
-  const [searchCompletion, setSearchCompletion] =
+  const [searchSuggestion, setSearchSuggestion] =
     useState<SearchResponse | null>(null)
-  const [selectedSearch, setSelectedSearch] = useState(0)
+
+  const [selectedSearch, setSelectedSearch] = useState(-1)
+  const [searchCompletion, setSearchCompletion] = useState("")
   const router = useRouter()
 
   // Debouncing the search query, so the request is only sent after 300ms of inactivity
@@ -31,19 +33,15 @@ export default function CountrySearch() {
   // Get search completions based on the search query
   async function getSearchCompletions() {
     if (search === "") {
-      setSearchCompletion(null)
+      setSearchSuggestion(null)
       return
-    }
-
-    if (searchCompletion && selectedSearch > searchCompletion.length - 1) {
-      setSelectedSearch(1)
     }
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_COUNTRY_API_URL}/name/${debouncedValue}?fields=name`
     )
     if (response.status === 404) {
-      setSearchCompletion([])
+      setSearchSuggestion([])
       return
     }
     const searchCompletionResults: SearchResponse = await response.json()
@@ -59,54 +57,76 @@ export default function CountrySearch() {
       search.name?.common.toLowerCase().startsWith(debouncedValue.toLowerCase())
     )
 
-    setSearchCompletion(filteredSearchResults)
+    setSearchSuggestion(filteredSearchResults)
   }
 
   // When the user selects a country, navigate to the country page
   async function searchCountry(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!searchCompletion) return
+    if (!searchSuggestion) return
 
-    const country = searchCompletion[selectedSearch].name.common
+    console.table({
+      search,
+      searchSuggestion,
+      selectedSearch,
+      searchCompletion,
+    })
+
+    // Auto select the first result if no result is selected
+    const country =
+      selectedSearch === -1
+        ? searchSuggestion[0].name.common
+        : searchSuggestion[selectedSearch].name.common
+
+    setSearchCompletion(country)
 
     router.push(`/country/${country}`)
     setSearch("")
-    setSearchCompletion(null)
+    setSearchSuggestion(null)
   }
 
   // Handle keyboard navigation for search results
   function handleSearchSelection(e: KeyboardEvent<HTMLInputElement>) {
-    if (!searchCompletion) return
+    if (!searchSuggestion) return
 
-    if (e.key === "ArrowDown" && searchCompletion) {
-      setSelectedSearch((prev) => (prev + 1) % searchCompletion.length)
+    if (e.key === "ArrowDown" && searchSuggestion) {
+      setSelectedSearch((prev) => (prev + 1) % searchSuggestion.length)
     }
-    if (e.key === "ArrowUp" && searchCompletion) {
+    if (e.key === "ArrowUp" && searchSuggestion) {
       setSelectedSearch((prev) =>
-        prev > 0 ? prev - 1 : searchCompletion.length - 1
+        prev > 0 ? prev - 1 : searchSuggestion.length - 1
       )
     }
   }
+
+  useEffect(() => {
+    if (searchSuggestion) {
+      setSearchCompletion(searchSuggestion[selectedSearch].name.common)
+    } else {
+      setSearchCompletion(search)
+    }
+  }, [selectedSearch])
 
   return (
     <form onSubmit={searchCountry} className="flex gap-2">
       <div className="w-full">
         <Input
           placeholder="Where you want to visit?"
-          defaultValue={search}
+          value={searchCompletion}
           onChange={(e) => {
             if (e.target.value === "") {
-              setSearchCompletion(null)
+              setSearchSuggestion(null)
             }
             setSearch(e.target.value)
+            setSearchCompletion(e.target.value)
           }}
           onKeyDown={handleSearchSelection}
         />
         <div className="flex flex-col">
-          {searchCompletion?.length === 0 ? (
+          {searchSuggestion?.length === 0 ? (
             <p>No Countries found</p>
           ) : (
-            searchCompletion?.map((search, i) => {
+            searchSuggestion?.map((search, i) => {
               return (
                 <p
                   key={search.name?.common}
