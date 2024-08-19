@@ -22,7 +22,7 @@ export default function CountrySearch() {
   // Debouncing the search query, so the request is only sent after 300ms of inactivity
   // Avoiding flooding the API every call.
   // Could have throttled as well, but this feels more natural
-  const debouncedValue = useDebounce(search, 50)
+  const debouncedValue = useDebounce(search, 200)
 
   useEffect(() => {
     if (debouncedValue) {
@@ -65,13 +65,6 @@ export default function CountrySearch() {
     e.preventDefault()
     if (!searchSuggestion) return
 
-    console.table({
-      search,
-      searchSuggestion,
-      selectedSearch,
-      searchCompletion,
-    })
-
     // Auto select the first result if no result is selected
     const country =
       selectedSearch === -1
@@ -87,9 +80,15 @@ export default function CountrySearch() {
 
   // Handle keyboard navigation for search results
   function handleSearchSelection(e: KeyboardEvent<HTMLInputElement>) {
-    if (!searchSuggestion) return
+    if (!searchSuggestion) {
+      setSelectedSearch(-1)
+    }
 
-    if (e.key === "ArrowDown" && searchSuggestion) {
+    if (
+      e.key === "ArrowDown" &&
+      searchSuggestion &&
+      searchSuggestion?.length > 0
+    ) {
       setSelectedSearch((prev) => (prev + 1) % searchSuggestion.length)
     }
     if (e.key === "ArrowUp" && searchSuggestion) {
@@ -100,7 +99,13 @@ export default function CountrySearch() {
   }
 
   useEffect(() => {
-    if (searchSuggestion) {
+    console.table({
+      searchSuggestion,
+      selectedSearch,
+      searchCompletion,
+    })
+
+    if (searchSuggestion && selectedSearch !== -1) {
       setSearchCompletion(searchSuggestion[selectedSearch].name.common)
     } else {
       setSearchCompletion(search)

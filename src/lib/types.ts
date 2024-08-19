@@ -8,7 +8,7 @@ export interface Country {
   independent: boolean
   status: string
   unMember: boolean
-  currencies: Currencies[]
+  currencies: Currencies
   idd: Idd
   capital: string[]
   altSpellings: string[]
@@ -69,7 +69,7 @@ export interface Flags {
   alt: string
 }
 
-export type Gini = Record<string, number>[]
+export type Gini = Record<string, number>
 
 export interface Idd {
   root: string
@@ -91,9 +91,7 @@ export interface CountryName {
   nativeName: NativeName
 }
 
-export interface NativeName {
-  eng: Translation
-}
+export type NativeName = Record<string, Translation>
 
 export interface Translation {
   official: string
