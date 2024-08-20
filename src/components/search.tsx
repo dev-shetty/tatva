@@ -140,7 +140,9 @@ export default function Search({ handleSearch }: SearchProps) {
         />
         <div className="flex flex-col absolute bg-background w-full shadow-lg rounded-md">
           {searchSuggestion?.length === 0 ? (
-            <p>No Countries found</p>
+            <p className="flex relative text-primary/70 gap-2 items-center w-full px-3 py-2 rounded-md">
+              No Countries found
+            </p>
           ) : (
             searchSuggestion?.map((search, i) => {
               return (
