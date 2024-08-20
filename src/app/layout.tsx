@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar"
 import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
@@ -27,6 +28,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <Navbar />
         {children}
         <Toaster />
       </body>

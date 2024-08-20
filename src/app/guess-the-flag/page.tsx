@@ -89,9 +89,12 @@ export default function GuessTheFlagPage() {
   return (
     <main className="px-4 py-12 md:p-12 container flex flex-col items-center justify-center mx-auto">
       <div className="flex items-center justify-end gap-2 w-full">
-        <p className="px-8 font-bold  flex items-center gap-2 py-2 bg-primary text-white rounded-md">
-          Score: <span className="text-2xl">{score}</span>
+        <p className="px-4 font-bold flex items-center gap-2 py-2 text-xl rounded-md">
+          Score: <span className="text-3xl">{score}</span>
         </p>
+      </div>
+      <div className="flex mt-2 mb-8 items-center gap-4">
+        <H1>Guess the Flag</H1>
         <Dialog>
           <DialogTrigger asChild>
             <Button
@@ -110,7 +113,7 @@ export default function GuessTheFlagPage() {
                 })
               }}
             >
-              <LightbulbIcon fill="yellow" />
+              <LightbulbIcon fill="yellow" size="32" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -123,7 +126,6 @@ export default function GuessTheFlagPage() {
           </DialogContent>
         </Dialog>
       </div>
-      <H1 className="mt-2 mb-8">Guess the Flag</H1>
       <div className="grid gap-2">
         <div className="relative w-[16rem] h-[12rem] md:w-[32rem] md:h-[24rem]">
           <Image fill src={country.flags.svg} alt="Flag" />
