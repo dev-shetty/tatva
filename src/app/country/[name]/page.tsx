@@ -46,7 +46,7 @@ export default async function CountryPage({
   return (
     <main className="py-16">
       <section className="flex flex-col justify-center items-center">
-        <div className="flex flex-col justify-center items-center gap-6">
+        <div className="flex flex-col justify-center items-center gap-2 md:gap-4 lg:gap-4">
           <div className="flex flex-col justify-center items-center gap-4">
             <Image
               src={country.flags.svg}
@@ -54,26 +54,28 @@ export default async function CountryPage({
               height={40}
               alt={country.flags.alt}
             />
-            {!!country.coatOfArms.svg && (
-              <Image
-                src={country.coatOfArms.svg}
-                width={250}
-                height={250}
-                alt={country.flags.alt}
-                className="object-cover"
-              />
-            )}
+            <div className="relative w-32 md:w-64 lg:w-96 aspect-square">
+              {!!country.coatOfArms.svg && (
+                <Image
+                  src={country.coatOfArms.svg}
+                  fill
+                  priority
+                  alt={country.flags.alt}
+                  className="object-contain md:scale-100"
+                />
+              )}
+            </div>
             <div className="flex items-center gap-8">
               <H1 className="lg:text-6xl font-bold text-primary text-center mx-auto">
                 {country.name.official}
               </H1>
             </div>
           </div>
-          <div className="flex flex-col gap-2 justify-center items-center">
-            <div className="flex gap-2 flex-wrap font-bold">
+          <div className="flex flex-col gap-1 md:gap-2 justify-center items-center">
+            <div className="flex gap-2 flex-wrap justify-center font-bold">
               {Object.entries(country.name.nativeName).map(
                 ([key, value], index) => (
-                  <H2 className="flex gap-2" key={key}>
+                  <H2 className="flex gap-2 text-2xl md:text-3xl" key={key}>
                     <span>{value.common}</span>
                     <span
                       className={cn("", {
@@ -90,12 +92,12 @@ export default async function CountryPage({
             </div>
             <div className="flex gap-1 items-center">
               <Icons.capitalCircle />
-              <H2 className="text-2xl">{country.capital}</H2>
+              <H2 className="text-xl md:text-2xl">{country.capital}</H2>
             </div>
           </div>
         </div>
       </section>
-      <section className="w-3/4 rounded-lg p-12 shadow-lg mx-auto bg-accent mt-8">
+      <section className="w-11/12 md:w-3/4 rounded-lg py-8 px-4 md:py-12 md:px-12 shadow-lg mx-auto bg-accent mt-8">
         <section className="grid gap-4 md:grid-cols-2">
           <div className="flex flex-col md:border-r">
             <div>
@@ -188,33 +190,34 @@ export default async function CountryPage({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-8 px-4">
-            <div className="relative w-full aspect-[4/3]">
+          <div className="grid grid-cols-2 gap-2 md:gap-8 px-4">
+            <div className="relative col-span-2 md:col-span-1 w-full aspect-[4/3]">
               <Image
                 src={country.flags.svg}
-                fill
+                width={500}
+                height={500}
                 alt={country.flags.alt}
                 className="bg-gray-100"
               />
             </div>
-            <div className="flex flex-col justify-center items-center rounded-md px-4">
+            <div className="flex flex-col col-span-2 md:col-span-1 justify-center items-center rounded-md px-4">
               <p className="text-2xl font-bold text-primary/60">Area Covered</p>
               <p className="text-3xl font-bold flex flex-wrap justify-center gap-2">
                 {country.area.toLocaleString()} <span>km²</span>
               </p>
             </div>
-            <div className="grid gap-2 col-span-2">
+            <div className="grid gap-2 col-span-2 my-2">
               <div className="grid place-items-center w-full border">
                 <Map url={country.flags.svg} name={country.name.common} />
               </div>
-              <div className="grid grid-cols-2 place-items-center w-full">
-                <div className="flex gap-1 w-full justify-center border-r">
+              <div className="grid md:grid-cols-2 place-items-center w-full">
+                <div className="flex gap-1 w-full justify-center md:border-r">
                   <p className="text-muted-foreground">Latitude:</p>
-                  <p>{country.latlng[0]}</p>
+                  <p>{country.latlng[0].toFixed(2)}</p>
                 </div>
                 <div className="flex gap-1 w-full justify-center">
                   <p className="text-muted-foreground">Longitude:</p>
-                  <p>{country.latlng[1]}</p>
+                  <p>{country.latlng[1].toFixed(2)}</p>
                 </div>
               </div>
             </div>
