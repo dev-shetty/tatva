@@ -11,7 +11,7 @@ export default function Home() {
           <H2 className="text-xl">Choose a Country</H2>
           <CountrySearch />
         </div>
-        <div className="grid gap-1">
+        <div className="grid gap-2">
           <H2 className="text-xl">We suggest you:</H2>
           <SuggestCountries />
         </div>
