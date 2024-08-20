@@ -7,7 +7,7 @@ export default async function GuessTheFlag() {
   const data: Pick<Country, "name" | "flags">[] = await response.json()
 
   if (!data) {
-    return <div>Couldn't load countries... Please try again</div>
+    return <div>Couldn&apos;t load countries... Please try again</div>
   }
 
   return <main></main>

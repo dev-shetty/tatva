@@ -236,8 +236,8 @@ export default async function CountryPage({
               </div>
               <div className="flex flex-wrap w-full justify-center">
                 {Array.from({ length: country.population / 20_000_000 }).map(
-                  () => (
-                    <UserRound fill="#ddd" className="-ml-2" />
+                  (_, index) => (
+                    <UserRound fill="#ddd" className="-ml-2" key={index} />
                   )
                 )}
               </div>
