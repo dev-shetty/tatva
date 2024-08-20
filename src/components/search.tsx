@@ -8,8 +8,10 @@ import { cn } from "@/lib/utils"
 import { Plane } from "lucide-react"
 import Image from "next/image"
 import {
+  Dispatch,
   FormEvent,
   KeyboardEvent,
+  SetStateAction,
   useCallback,
   useEffect,
   useState,
@@ -17,17 +19,26 @@ import {
 
 interface SearchProps {
   handleSearch: (country: string) => void
+  searchCompletion: string
+  setSearchCompletion: Dispatch<SetStateAction<string>>
+  showFlag?: boolean
+  isGame?: boolean
 }
 
 type SearchResponse = Pick<Country, "name" | "flags">[]
 
-export default function Search({ handleSearch }: SearchProps) {
-  const [search, setSearch] = useState("")
+export default function Search({
+  handleSearch,
+  searchCompletion,
+  setSearchCompletion,
+  showFlag = true,
+  isGame = false,
+}: SearchProps) {
   const [searchSuggestion, setSearchSuggestion] =
     useState<SearchResponse | null>(null)
+  const [search, setSearch] = useState("")
 
   const [selectedSearch, setSelectedSearch] = useState(-1)
-  const [searchCompletion, setSearchCompletion] = useState("")
 
   // Debouncing the search query, so the request is only sent after 300ms of inactivity
   // Avoiding flooding the API every call.
@@ -85,9 +96,9 @@ export default function Search({ handleSearch }: SearchProps) {
           : searchSuggestion[selectedSearch].name.common
 
     setSearchCompletion(country)
+    setSearch("")
 
     handleSearch(country)
-    setSearch("")
     setSearchSuggestion(null)
   }
 
@@ -123,7 +134,11 @@ export default function Search({ handleSearch }: SearchProps) {
     <form onSubmit={handleSubmit} className="flex gap-2">
       <div className="w-full relative">
         <Input
-          placeholder="Where you want to visit?"
+          placeholder={
+            isGame
+              ? "Guess correctly for 20 points"
+              : "Where you want to visit?"
+          }
           value={searchCompletion}
           onChange={(e) => {
             if (e.target.value === "") {
@@ -153,13 +168,15 @@ export default function Search({ handleSearch }: SearchProps) {
                     }
                   )}
                 >
-                  <Image
-                    src={search.flags.svg}
-                    width={24}
-                    height={24}
-                    alt={search.name.common}
-                    className="rounded-full bg-gray-100 object-cover shadow outline aspect-square"
-                  />
+                  {showFlag && (
+                    <Image
+                      src={search.flags.svg}
+                      width={24}
+                      height={24}
+                      alt={search.name.common}
+                      className="rounded-full bg-gray-100 object-cover shadow outline aspect-square"
+                    />
+                  )}
                   <p>{search.name?.common}</p>
                 </div>
               )

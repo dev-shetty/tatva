@@ -1,6 +1,6 @@
 import { Icons } from "@/components/icons"
 import Map from "@/components/map"
-import { H1, H2 } from "@/components/ui/typography"
+import { Blockquote, H1, H2 } from "@/components/ui/typography"
 import { Country } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { Info, UserRound } from "lucide-react"
@@ -101,6 +101,9 @@ export default async function CountryPage({
         <section className="grid gap-4 md:grid-cols-2">
           <div className="flex flex-col md:border-r">
             <div>
+              <div className="flex gap-2 mb-4">
+                <Blockquote>{country.flags.alt}</Blockquote>
+              </div>
               <div className="flex gap-2">
                 <span className="text-muted-foreground">Continent:</span>
                 <span>{country.continents.join(", ")}</span>

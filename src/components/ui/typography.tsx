@@ -58,3 +58,15 @@ export function H4({ children, className, ...props }: HeadingProps) {
     </h4>
   )
 }
+
+export function Blockquote({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLQuoteElement>) {
+  return (
+    <blockquote className={cn("border-l-2 pl-6 italic", className)} {...props}>
+      {children}
+    </blockquote>
+  )
+}
