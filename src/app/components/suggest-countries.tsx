@@ -12,7 +12,6 @@ export default async function SuggestCountries() {
   )
 
   const data: APIResponse = await response.json()
-  console.log(data)
 
   if (!data) {
     return <p>Failed to load data</p>

@@ -12,7 +12,7 @@ export default function Home() {
           <CountrySearch />
         </div>
         <div className="grid gap-2">
-          <H2 className="text-xl">We suggest you:</H2>
+          <H2 className="text-xl">Most visited countries</H2>
           <SuggestCountries />
         </div>
       </div>

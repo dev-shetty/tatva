@@ -64,8 +64,6 @@ export default function Search({ handleSearch }: SearchProps) {
     setSearchSuggestion(filteredSearchResults)
   }, [debouncedValue, search])
 
-  console.log(searchSuggestion)
-
   useEffect(() => {
     if (debouncedValue) {
       getSearchCompletions()
@@ -137,7 +135,7 @@ export default function Search({ handleSearch }: SearchProps) {
           className="outline-1 outline-primary"
           onKeyDown={handleSearchSelection}
         />
-        <div className="flex flex-col absolute bg-background w-full shadow-lg rounded-md">
+        <div className="flex flex-col absolute max-h-[25rem] overflow-y-auto bg-background w-full shadow-lg rounded-md">
           {searchSuggestion?.length === 0 ? (
             <p className="flex relative text-primary/70 gap-2 items-center w-full px-3 py-2 rounded-md">
               No Countries found
