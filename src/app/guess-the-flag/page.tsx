@@ -5,8 +5,10 @@ import Search from "@/components/search"
 import { H1 } from "@/components/ui/typography"
 import { Country } from "@/lib/types"
 import { getRandomNumber } from "@/lib/utils"
+import { AlertCircle, Check, CheckCircle } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 type APIResponse = Pick<Country, "name" | "flags">
 
@@ -17,11 +19,13 @@ export default function GuessTheFlagPage() {
   const [search, setSearch] = useState("")
   const [isCorrect, setIsCorrect] = useState(false)
   const [score, setScore] = useState(0)
+  const [error, setError] = useState("")
 
   function handleSearch() {
     if (!country) return
 
     setIsCorrect(false)
+    setError("")
 
     console.table({
       country: country.name.common.toLowerCase(),
@@ -31,8 +35,22 @@ export default function GuessTheFlagPage() {
       setIsCorrect(true)
       setScore((prev) => prev + SCORE_PER_QUESTION)
       getCountries()
+      toast("Correct answer", {
+        cancel: true,
+        icon: <CheckCircle />,
+        duration: 2000,
+        style: { backgroundColor: "green", color: "white" },
+        position: "top-center",
+      })
     } else {
       setIsCorrect(false)
+      toast("Incorrect answer", {
+        cancel: true,
+        icon: <AlertCircle />,
+        duration: 2000,
+        style: { backgroundColor: "red", color: "white" },
+        position: "top-center",
+      })
     }
 
     setSearch("")
@@ -70,6 +88,7 @@ export default function GuessTheFlagPage() {
         <div className="relative w-[16rem] h-[12rem] md:w-[32rem] md:h-[24rem]">
           <Image fill src={country.flags.svg} alt="Flag" />
         </div>
+
         <Search
           handleSearch={handleSearch}
           searchCompletion={search}
