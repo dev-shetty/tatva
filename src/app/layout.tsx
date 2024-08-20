@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "bg-lily-gradient bg-cover  min-h-screen font-sans antialiased",
+          "bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 bg-cover min-h-screen font-sans antialiased",
           fontSans.variable
         )}
       >

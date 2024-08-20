@@ -60,17 +60,17 @@ export default async function CountryPage({
                 width={250}
                 height={250}
                 alt={country.flags.alt}
-                // className="rounded-full object-cover aspect-square shadow-lg"
+                className="object-cover"
               />
             )}
             <div className="flex items-center gap-8">
-              <H1 className="lg:text-6xl font-bold text-primary">
+              <H1 className="lg:text-6xl font-bold text-primary text-center mx-auto">
                 {country.name.official}
               </H1>
             </div>
           </div>
           <div className="flex flex-col gap-2 justify-center items-center">
-            <div className="flex gap-2 font-bold">
+            <div className="flex gap-2 flex-wrap font-bold">
               {Object.entries(country.name.nativeName).map(
                 ([key, value], index) => (
                   <H2 className="flex gap-2" key={key}>
@@ -190,7 +190,12 @@ export default async function CountryPage({
           </div>
           <div className="grid grid-cols-2 gap-8 px-4">
             <div className="relative w-full aspect-[4/3]">
-              <Image src={country.flags.svg} fill alt={country.flags.alt} />
+              <Image
+                src={country.flags.svg}
+                fill
+                alt={country.flags.alt}
+                className="bg-gray-100"
+              />
             </div>
             <div className="flex flex-col justify-center items-center rounded-md px-4">
               <p className="text-2xl font-bold text-primary/60">Area Covered</p>
@@ -235,11 +240,11 @@ export default async function CountryPage({
                 </div>
               </div>
               <div className="flex flex-wrap w-full justify-center">
-                {Array.from({ length: country.population / 20_000_000 }).map(
-                  (_, index) => (
-                    <UserRound fill="#ddd" className="-ml-2" key={index} />
-                  )
-                )}
+                {Array.from({
+                  length: country.population / 20_000_000,
+                }).map((_, index) => (
+                  <UserRound fill="#ddd" className="-ml-2" key={index} />
+                ))}
               </div>
             </div>
           </div>

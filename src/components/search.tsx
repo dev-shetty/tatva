@@ -7,7 +7,6 @@ import { Country } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { Plane } from "lucide-react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import {
   FormEvent,
   KeyboardEvent,
@@ -161,7 +160,7 @@ export default function Search({ handleSearch }: SearchProps) {
                     width={24}
                     height={24}
                     alt={search.name.common}
-                    className="rounded-full object-cover shadow outline aspect-square"
+                    className="rounded-full bg-gray-100 object-cover shadow outline aspect-square"
                   />
                   <p>{search.name?.common}</p>
                 </div>
