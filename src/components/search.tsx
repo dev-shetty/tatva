@@ -3,8 +3,10 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import useDebounce from "@/hooks/use-debounce"
-import { SearchResponse } from "@/lib/types"
+import { Country } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { Plane } from "lucide-react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import {
   FormEvent,
@@ -17,6 +19,8 @@ import {
 interface SearchProps {
   handleSearch: (country: string) => void
 }
+
+type SearchResponse = Pick<Country, "name" | "flags">[]
 
 export default function Search({ handleSearch }: SearchProps) {
   const [search, setSearch] = useState("")
@@ -39,7 +43,7 @@ export default function Search({ handleSearch }: SearchProps) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_COUNTRY_API_URL}/name/${debouncedValue}?fields=name`
+      `${process.env.NEXT_PUBLIC_COUNTRY_API_URL}/name/${debouncedValue}?fields=name,flags`
     )
     if (response.status === 404) {
       setSearchSuggestion([])
@@ -61,21 +65,27 @@ export default function Search({ handleSearch }: SearchProps) {
     setSearchSuggestion(filteredSearchResults)
   }, [debouncedValue, search])
 
+  console.log(searchSuggestion)
+
   useEffect(() => {
     if (debouncedValue) {
       getSearchCompletions()
     }
   }, [debouncedValue, getSearchCompletions])
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(
+    e: FormEvent<HTMLFormElement | HTMLDivElement>,
+    country?: string
+  ) {
     e.preventDefault()
     if (!searchSuggestion) return
 
     // Auto select the first result if no result is selected
-    const country =
-      selectedSearch === -1
-        ? searchSuggestion[0].name.common
-        : searchSuggestion[selectedSearch].name.common
+    if (!country)
+      country =
+        selectedSearch === -1
+          ? searchSuggestion[0].name.common
+          : searchSuggestion[selectedSearch].name.common
 
     setSearchCompletion(country)
 
@@ -110,11 +120,11 @@ export default function Search({ handleSearch }: SearchProps) {
     } else {
       setSearchCompletion(search)
     }
-  }, [selectedSearch, search, searchSuggestion])
+  }, [selectedSearch])
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
-      <div className="w-full">
+      <div className="w-full relative">
         <Input
           placeholder="Where you want to visit?"
           value={searchCompletion}
@@ -125,28 +135,42 @@ export default function Search({ handleSearch }: SearchProps) {
             setSearch(e.target.value)
             setSearchCompletion(e.target.value)
           }}
+          className="outline-1 outline-primary"
           onKeyDown={handleSearchSelection}
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col absolute bg-background w-full shadow-lg rounded-md">
           {searchSuggestion?.length === 0 ? (
             <p>No Countries found</p>
           ) : (
             searchSuggestion?.map((search, i) => {
               return (
-                <p
+                <div
+                  onClick={(e) => handleSubmit(e, search.name?.common)}
                   key={search.name?.common}
-                  className={cn("", {
-                    "bg-gray-200": i === selectedSearch,
-                  })}
+                  className={cn(
+                    "flex relative gap-2 items-center hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md",
+                    {
+                      "bg-gray-200": i === selectedSearch,
+                    }
+                  )}
                 >
-                  {search.name?.common}
-                </p>
+                  <Image
+                    src={search.flags.svg}
+                    width={24}
+                    height={24}
+                    alt={search.name.common}
+                    className="rounded-full object-cover shadow outline aspect-square"
+                  />
+                  <p>{search.name?.common}</p>
+                </div>
               )
             })
           )}
         </div>
       </div>
-      <Button type="submit">-&gt;</Button>
+      <Button type="submit">
+        <Plane fill="#fff" stroke="0" />
+      </Button>
     </form>
   )
 }
