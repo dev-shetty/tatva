@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import useDebounce from "@/hooks/use-debounce"
-import { Country } from "@/lib/types"
+import { SearchResponse } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import {
@@ -14,16 +14,17 @@ import {
   useState,
 } from "react"
 
-type SearchResponse = Pick<Country, "name">[]
+interface SearchProps {
+  handleSearch: (country: string) => void
+}
 
-export default function CountrySearch() {
+export default function Search({ handleSearch }: SearchProps) {
   const [search, setSearch] = useState("")
   const [searchSuggestion, setSearchSuggestion] =
     useState<SearchResponse | null>(null)
 
   const [selectedSearch, setSelectedSearch] = useState(-1)
   const [searchCompletion, setSearchCompletion] = useState("")
-  const router = useRouter()
 
   // Debouncing the search query, so the request is only sent after 300ms of inactivity
   // Avoiding flooding the API every call.
@@ -66,8 +67,7 @@ export default function CountrySearch() {
     }
   }, [debouncedValue, getSearchCompletions])
 
-  // When the user selects a country, navigate to the country page
-  async function searchCountry(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!searchSuggestion) return
 
@@ -79,7 +79,7 @@ export default function CountrySearch() {
 
     setSearchCompletion(country)
 
-    router.push(`/country/${country}`)
+    handleSearch(country)
     setSearch("")
     setSearchSuggestion(null)
   }
@@ -113,7 +113,7 @@ export default function CountrySearch() {
   }, [selectedSearch, search, searchSuggestion])
 
   return (
-    <form onSubmit={searchCountry} className="flex gap-2">
+    <form onSubmit={handleSubmit} className="flex gap-2">
       <div className="w-full">
         <Input
           placeholder="Where you want to visit?"

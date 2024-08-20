@@ -1,3 +1,5 @@
+export type SearchResponse = Pick<Country, "name">[]
+
 export interface Country {
   name: CountryName
   tld: string[]
