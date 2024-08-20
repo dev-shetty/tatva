@@ -18,7 +18,6 @@ export default function CountrySearch() {
       handleSearch={searchCountry}
       searchCompletion={searchCompletion}
       setSearchCompletion={setSearchCompletion}
-      showFlag={false}
     />
   )
 }
