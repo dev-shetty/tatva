@@ -1,10 +1,17 @@
 import { Icons } from "@/components/icons"
 import Map from "@/components/map"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { H1, H2 } from "@/components/ui/typography"
 import { Country } from "@/lib/types"
+import { cn } from "@/lib/utils"
+import { Info, UserRound } from "lucide-react"
 import Image from "next/image"
-import { Suspense } from "react"
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export default async function CountryPage({
   params,
@@ -37,54 +44,61 @@ export default async function CountryPage({
   }
 
   return (
-    <main>
-      <header className="w-full bg-fuchsia-100 py-8 px-4 md:px-6 lg:px-8">
-        <div className="container mx-auto flex flex-col items-center gap-4 md:flex-row md:justify-between">
-          <div className="flex items-center gap-6">
+    <main className="py-16">
+      <section className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center gap-6">
+          <div className="flex flex-col justify-center items-center gap-4">
             <Image
               src={country.flags.svg}
-              width={160}
-              height={120}
+              width={60}
+              height={40}
               alt={country.flags.alt}
             />
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 text-2xl">
-                <H1 className="lg:text-4xl font-bold text-primary">
-                  {country.name.common}
-                </H1>
-                <div className="flex gap-2 font-bold">
-                  {Object.entries(country.name.nativeName).map(
-                    ([key, value]) =>
-                      key !== "eng" && (
-                        <p className="flex gap-2" key={key}>
-                          <span>|</span>
-                          <span>{value.common}</span>
-                        </p>
-                      )
-                  )}
-                </div>
-              </div>
-              <div className="flex gap-1 items-center">
-                <Icons.capitalCircle />
-                <H2 className="text-2xl">{country.capital}</H2>
-              </div>
+            {!!country.coatOfArms.svg && (
+              <Image
+                src={country.coatOfArms.svg}
+                width={250}
+                height={250}
+                alt={country.flags.alt}
+                // className="rounded-full object-cover aspect-square shadow-lg"
+              />
+            )}
+            <div className="flex items-center gap-8">
+              <H1 className="lg:text-6xl font-bold text-primary">
+                {country.name.official}
+              </H1>
             </div>
           </div>
-          <Image
-            src={country.coatOfArms.svg}
-            alt={`Coat of Arms of ${country.name.common}`}
-            width={75}
-            height={75}
-          />
+          <div className="flex flex-col gap-2 justify-center items-center">
+            <div className="flex gap-2 font-bold">
+              {Object.entries(country.name.nativeName).map(
+                ([key, value], index) => (
+                  <H2 className="flex gap-2" key={key}>
+                    <span>{value.common}</span>
+                    <span
+                      className={cn("", {
+                        hidden:
+                          index ===
+                          Object.keys(country.name.nativeName).length - 1,
+                      })}
+                    >
+                      |
+                    </span>
+                  </H2>
+                )
+              )}
+            </div>
+            <div className="flex gap-1 items-center">
+              <Icons.capitalCircle />
+              <H2 className="text-2xl">{country.capital}</H2>
+            </div>
+          </div>
         </div>
-      </header>
-      <section className="container mx-auto my-8">
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="lg:col-span-2 flex flex-col">
-            <CardHeader>
-              <CardTitle>{country.name.official}</CardTitle>
-            </CardHeader>
-            <CardContent>
+      </section>
+      <section className="w-3/4 rounded-lg p-12 shadow-lg mx-auto bg-accent mt-8">
+        <section className="grid gap-4 md:grid-cols-2">
+          <div className="flex flex-col md:border-r">
+            <div>
               <div className="flex gap-2">
                 <span className="text-muted-foreground">Continent:</span>
                 <span>{country.continents.join(", ")}</span>
@@ -146,11 +160,21 @@ export default async function CountryPage({
                 <p>
                   {country.idd.root}
                   {country.idd.suffixes.slice(0, 10).join(", ")}
-                  <span
-                    className="underline"
-                    title={country.idd.suffixes.slice(10, -1).join(", ")}
-                  >
-                    {country.idd.suffixes.length > 10 && ` ...`}
+                  <span className="underline">
+                    {country.idd.suffixes.length > 10 && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span>...</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="max-w-96">
+                              {country.idd.suffixes.slice(10, -1).join(", ")}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
                   </span>
                 </p>
               </div>
@@ -162,25 +186,63 @@ export default async function CountryPage({
                 <span className="text-muted-foreground">Landlocked</span>
                 <span>{country.landlocked ? "Yes" : "No"}</span>
               </div>
-            </CardContent>
-          </Card>
-          <Card className="ml-auto">
-            <CardHeader>
-              <div className="grid grid-cols-2 text-center w-full">
-                <div className="grid gap-1 px-4 border-r">
-                  <p className="text-muted-foreground border-b">Latitude</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-8 px-4">
+            <div className="relative w-full aspect-[4/3]">
+              <Image src={country.flags.svg} fill alt={country.flags.alt} />
+            </div>
+            <div className="flex flex-col justify-center items-center rounded-md px-4">
+              <p className="text-2xl font-bold text-primary/60">Area Covered</p>
+              <p className="text-3xl font-bold flex flex-wrap justify-center gap-2">
+                {country.area.toLocaleString()} <span>km²</span>
+              </p>
+            </div>
+            <div className="grid gap-2 col-span-2">
+              <div className="grid place-items-center w-full border">
+                <Map url={country.flags.svg} name={country.name.common} />
+              </div>
+              <div className="grid grid-cols-2 place-items-center w-full">
+                <div className="flex gap-1 w-full justify-center border-r">
+                  <p className="text-muted-foreground">Latitude:</p>
                   <p>{country.latlng[0]}</p>
                 </div>
-                <div className="grid gap-1 px-4">
-                  <p className="text-muted-foreground border-b">Longitude</p>
+                <div className="flex gap-1 w-full justify-center">
+                  <p className="text-muted-foreground">Longitude:</p>
                   <p>{country.latlng[1]}</p>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent className="grid place-items-center">
-              <Map url={country.flags.svg} name={country.name.common} />
-            </CardContent>
-          </Card>
+            </div>
+            <div className="relative grid gap-2 col-span-2 rounded-md px-4">
+              <div className="flex flex-col justify-center items-center">
+                <p className="text-2xl font-bold text-primary/60">Population</p>
+                <p className="text-3xl font-bold flex flex-wrap justify-center gap-2">
+                  {country.population.toLocaleString()}
+                </p>
+                <div className="absolute top-2 right-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="flex gap-1 items-center">
+                          <UserRound /> = 20,000,000
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+              <div className="flex flex-wrap w-full justify-center">
+                {Array.from({ length: country.population / 20_000_000 }).map(
+                  () => (
+                    <UserRound fill="#ddd" className="-ml-2" />
+                  )
+                )}
+              </div>
+            </div>
+          </div>
         </section>
       </section>
     </main>
