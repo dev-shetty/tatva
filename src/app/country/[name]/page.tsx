@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Metadata } from "next"
 import dynamic from "next/dynamic"
 
 const Map = dynamic(() => import("./components/map"), {
@@ -18,11 +19,24 @@ const Map = dynamic(() => import("./components/map"), {
   ssr: false,
 })
 
-export default async function CountryPage({
+type PageProps = {
+  params: {
+    name: string
+  }
+}
+
+export async function generateMetadata({
   params,
-}: {
-  params: { name: string }
-}) {
+}: PageProps): Promise<Metadata> {
+  const { name: country } = params
+
+  return {
+    title: country,
+    description: `Learn more about ${country}`,
+  }
+}
+
+export default async function CountryPage({ params }: PageProps) {
   const { name: _name } = params
   // Parsing the name from the URL, as it is encoded
   const name = decodeURIComponent(_name)
