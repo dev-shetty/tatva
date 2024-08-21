@@ -1,6 +1,7 @@
 import Navbar from "@/components/navbar"
 import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils"
+import "leaflet/dist/leaflet.css"
 import type { Metadata } from "next"
 import { Inter as FontSans } from "next/font/google"
 import "./globals.css"

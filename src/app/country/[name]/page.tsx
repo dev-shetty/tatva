@@ -1,5 +1,4 @@
 import { Icons } from "@/components/icons"
-import Map from "@/components/map"
 import { Blockquote, H1, H2 } from "@/components/ui/typography"
 import { Country } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -12,6 +11,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import dynamic from "next/dynamic"
+
+const Map = dynamic(() => import("./components/map"), {
+  loading: () => <div className="h-[400px] w-full bg-gray-200"></div>,
+  ssr: false,
+})
 
 export default async function CountryPage({
   params,
@@ -211,7 +216,11 @@ export default async function CountryPage({
             </div>
             <div className="grid gap-2 col-span-2 my-2">
               <div className="grid place-items-center w-full border">
-                <Map url={country.flags.svg} name={country.name.common} />
+                <Map
+                  countryCoords={country.latlng}
+                  capitalCoords={country.capitalInfo.latlng}
+                  capital={country.capital}
+                />
               </div>
               <div className="grid md:grid-cols-2 place-items-center w-full">
                 <div className="flex gap-1 w-full justify-center md:border-r">
