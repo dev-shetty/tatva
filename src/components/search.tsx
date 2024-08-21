@@ -159,7 +159,9 @@ export default function Search({
             searchSuggestion?.map((search, i) => {
               return (
                 <div
-                  onClick={(e) => handleSubmit(e, search.name?.common)}
+                  onClick={(e) => {
+                    handleSubmit(e, search.name?.common)
+                  }}
                   key={search.name?.common}
                   className={cn(
                     "flex relative gap-2 items-center hover:bg-gray-100 cursor-pointer px-3 py-2 rounded-md",

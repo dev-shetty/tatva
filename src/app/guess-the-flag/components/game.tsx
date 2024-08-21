@@ -26,22 +26,12 @@ export default function GuessTheFlagGame() {
   const SCORE_PER_QUESTION = 20
 
   const [search, setSearch] = useState("")
-  const [isCorrect, setIsCorrect] = useState(false)
   const [score, setScore] = useState(0)
-  const [error, setError] = useState("")
 
-  function handleSearch() {
+  function handleSearch(guessedCountry: string) {
     if (!country) return
 
-    setIsCorrect(false)
-    setError("")
-
-    console.table({
-      country: country.name.common.toLowerCase(),
-      search: search.toLowerCase(),
-    })
-    if (country.name.common.toLowerCase() === search.toLowerCase()) {
-      setIsCorrect(true)
+    if (country.name.common.toLowerCase() === guessedCountry.toLowerCase()) {
       setScore((prev) => prev + SCORE_PER_QUESTION)
       getCountries()
       toast("Correct answer", {
@@ -52,7 +42,6 @@ export default function GuessTheFlagGame() {
         position: "top-center",
       })
     } else {
-      setIsCorrect(false)
       toast("Incorrect answer", {
         cancel: true,
         icon: <AlertCircle />,
@@ -73,8 +62,6 @@ export default function GuessTheFlagGame() {
 
     const randomCountry = data[getRandomNumber(0, data.length)]
     setCountry(randomCountry)
-
-    console.log(randomCountry.name.common)
   }
 
   useEffect(() => {
